@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineBuscador 🍿</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #141414; color: white; text-align: center; margin: 0; padding: 20px; }
+        .buscador-caja { margin-bottom: 30px; }
+        input { padding: 12px; width: 60%; border-radius: 5px; border: none; font-size: 16px; }
+        button { padding: 12px 20px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        #resultado { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+        .pelicula-card { 
+            background: #2f2f2f; padding: 15px; border-radius: 10px; width: 250px; 
+            transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .pelicula-card:hover { transform: scale(1.05); }
+        .pelicula-card img { width: 100%; border-radius: 5px; margin-bottom: 10px; }
+        .pelicula-card h3 { font-size: 18px; margin: 10px 0; color: #f1c40f; }
+        .pelicula-card p { font-size: 14px; color: #ccc; }
+    </style>
+</head>
+<body>
+
+    <h1>CineBuscador 🍿</h1>
+    <div class="buscador-caja">
+        <input type="text" id="tituloPelicula" placeholder="Escribe el nombre de una película...">
+        <button onclick="buscarPelicula()">Buscar</button>
+    </div>
+
+    <div id="resultado">
+        </div>
+
+    <script>
+        async function buscarPelicula() {
+            const nombre = document.getElementById('tituloPelicula').value;
+            const contenedor = document.getElementById('resultado');
+            
+            // Usamos una API Key gratuita de prueba: 4a249f8d
+            const url = `https://www.omdbapi.com/?t=${nombre}&apikey=4a249f8d`;
+
+            try {
+                const respuesta = await fetch(url);
+                const peli = await respuesta.json();
+
+                if (peli.Response === "True") {
+                    contenedor.innerHTML = `
+                        <div class="pelicula-card">
+                            <img src="${peli.Poster}" alt="Poster de ${peli.Title}">
+                            <h3>${peli.Title}</h3>
+                            <p><strong>Año:</strong> ${peli.Year}</p>
+                            <p><strong>Director:</strong> ${peli.Director}</p>
+                            <p><em>${peli.Plot}</em></p>
+                        </div>
+                    `;
+                } else {
+                    contenedor.innerHTML = `<p style="color:red;">No encontramos esa película. ¡Intenta con otra!</p>`;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    </script>
+
+</body>
+</html>
