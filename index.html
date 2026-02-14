@@ -12,12 +12,13 @@
     <h1>CineBuscador 🍿</h1>
     
     <div class="buscador-caja">
-        <input type="text" id="tituloPelicula" placeholder="Escribe el nombre de una película...">
+        <input type="text" id="tituloPelicula" placeholder="Escribe el nombre de una película..." onkeypress="if(event.key === 'Enter') buscarPelicula()">
+        
         <button onclick="buscarPelicula()">Buscar</button>
     </div>
 
     <div id="resultado">
-        </div>
+    </div>
 
     <script>
         async function buscarPelicula() {
