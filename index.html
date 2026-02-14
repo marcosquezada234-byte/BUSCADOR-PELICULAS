@@ -21,32 +21,40 @@
     </div>
 
     <script>
-        async function buscarPelicula() {
-            const nombre = document.getElementById('tituloPelicula').value;
-            const contenedor = document.getElementById('resultado');
-            
-            // Tu API Key
-            const url = `https://www.omdbapi.com/?s=${nombre}&apikey=4a249f8d`;
+       async function buscarPelicula() {
+    const nombre = document.getElementById('tituloPelicula').value;
+    const contenedor = document.getElementById('resultado');
 
-            try {
-                const respuesta = await fetch(url);
-                const datos = await respuesta.json();
+    // 1. Si el buscador está vacío, no hace nada
+    if (!nombre) return;
 
-                if (datos.Response === "True") {
-                    contenedor.innerHTML = datos.Search.map(peli => `
-                        <div class="pelicula-card">
-                            <img src="${peli.Poster !== 'N/A' ? peli.Poster : 'https://via.placeholder.com/200x300?text=Sin+Poster'}" alt="${peli.Title}">
-                            <h3>${peli.Title}</h3>
-                            <p>${peli.Year}</p>
-                        </div>
-                    `).join('');
-                } else {
-                    contenedor.innerHTML = "<p>No se encontraron películas.</p>";
-                }
-            } catch (error) {
-                console.error("Error:", error);
-            }
+    // 2. Mostramos el mensaje de cargando antes de la petición
+    contenedor.innerHTML = '<p class="cargando">Buscando películas... 🍿</p>';
+    
+    const url = `https://www.omdbapi.com/?s=${nombre}&apikey=4a249f8d`;
+
+    try {
+        const respuesta = await fetch(url);
+        const datos = await respuesta.json();
+
+        // 3. Cuando llegan los datos, el mensaje de carga desaparece 
+        // porque reemplazamos el innerHTML con las películas
+        if (datos.Response === "True") {
+            contenedor.innerHTML = datos.Search.map(peli => `
+                <div class="pelicula-card">
+                    <img src="${peli.Poster !== 'N/A' ? peli.Poster : 'https://via.placeholder.com/200x300?text=Sin+Poster'}" alt="${peli.Title}">
+                    <h3>${peli.Title}</h3>
+                    <p>${peli.Year}</p>
+                </div>
+            `).join('');
+        } else {
+            contenedor.innerHTML = "<p>No se encontraron películas. Intenta con otro nombre.</p>";
         }
+    } catch (error) {
+        contenedor.innerHTML = "<p>Hubo un error de conexión.</p>";
+        console.error("Error:", error);
+    }
+}
     </script>
 </body>
 </html>
