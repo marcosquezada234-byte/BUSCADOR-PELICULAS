@@ -6,8 +6,11 @@
     <title>CineBuscador 🍿</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
     <h1>CineBuscador 🍿</h1>
+    
     <div class="buscador-caja">
         <input type="text" id="tituloPelicula" placeholder="Escribe el nombre de una película...">
         <button onclick="buscarPelicula()">Buscar</button>
@@ -21,31 +24,28 @@
             const nombre = document.getElementById('tituloPelicula').value;
             const contenedor = document.getElementById('resultado');
             
-            // Usamos una API Key gratuita de prueba: 4a249f8d
-            const url = `https://www.omdbapi.com/?t=${nombre}&apikey=4a249f8d`;
+            // Tu API Key
+            const url = `https://www.omdbapi.com/?s=${nombre}&apikey=4a249f8d`;
 
             try {
                 const respuesta = await fetch(url);
-                const peli = await respuesta.json();
+                const datos = await respuesta.json();
 
-                if (peli.Response === "True") {
-                    contenedor.innerHTML = `
+                if (datos.Response === "True") {
+                    contenedor.innerHTML = datos.Search.map(peli => `
                         <div class="pelicula-card">
-                            <img src="${peli.Poster}" alt="Poster de ${peli.Title}">
+                            <img src="${peli.Poster !== 'N/A' ? peli.Poster : 'https://via.placeholder.com/200x300?text=Sin+Poster'}" alt="${peli.Title}">
                             <h3>${peli.Title}</h3>
-                            <p><strong>Año:</strong> ${peli.Year}</p>
-                            <p><strong>Director:</strong> ${peli.Director}</p>
-                            <p><em>${peli.Plot}</em></p>
+                            <p>${peli.Year}</p>
                         </div>
-                    `;
+                    `).join('');
                 } else {
-                    contenedor.innerHTML = `<p style="color:red;">No encontramos esa película. ¡Intenta con otra!</p>`;
+                    contenedor.innerHTML = "<p>No se encontraron películas.</p>";
                 }
             } catch (error) {
                 console.error("Error:", error);
             }
         }
     </script>
-
 </body>
 </html>
